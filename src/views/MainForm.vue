@@ -59,6 +59,10 @@
           </div>
         </section>
 
+        <div id="app">
+          <Comments />
+        </div>
+
         <div v-if="isBlockVisible" class="mt-4 p-4 bg-gray-200">
           <h3 class="text-left mb-2">Фильтрации по тегам</h3>
           <div class="flex justify-center">
@@ -66,27 +70,55 @@
               name="categories"
               id="cataloc"
               class="bg-gray-200 border border-gray-400 p-2"
+              v-model="selectedCategory"
+              @change="fetchFilters"
             >
-              <option value="1">Ремонт и строительство</option>
-              <option value="2">Ремонт и установка техники</option>
-              <option value="3">Ремонт авто</option>
-              <option value="4">Репетиторы и обучение</option>
-              <option value="5">Красота</option>
-              <option value="6">Перевозки и курьеры</option>
-              <option value="7">Хозяйство и уборка</option>
-              <option value="8">Компьютеры и IT</option>
-              <option value="9">Дизайнеры</option>
-              <option value="10">Аренда</option>
-              <option value="11">Юристы</option>
-              <option value="12">Тренеры</option>
-              <option value="13">Фото, видео, аудио</option>
-              <option value="14">Творчество, рукоделие и хобби</option>
-              <option value="15">Организация мероприятий</option>
-              <option value="16">Артисты</option>
-              <option value="17">Охрана</option>
-              <option value="18">Услуги для животных</option>
-              <option value="19">Разное</option>
+              <option value="">Выберите категорию</option>
+              <option value="Ремонт и строительство">
+                Ремонт и строительство
+              </option>
+              <option value="Ремонт и установка техники">
+                Ремонт и установка техники
+              </option>
+              <option value="Ремонт авто">Ремонт авто</option>
+              <option value="Репетиторы и обучение">
+                Репетиторы и обучение
+              </option>
+              <option value="Красота">Красота</option>
+              <option value="Перевозки и курьеры">Перевозки и курьеры</option>
+              <option value="Хозяйство и уборка">Хозяйство и уборка</option>
+              <option value="Компьютеры и IT">Компьютеры и IT</option>
+              <option value="Дизайнеры">Дизайнеры</option>
+              <option value="Аренда">Аренда</option>
+              <option value="Юристы">Юристы</option>
+              <option value="Тренеры">Тренеры</option>
+              <option value="Фото, видео, аудио">Фото, видео, аудио</option>
+              <option value="Творчество, рукоделие и хобби">
+                Творчество, рукоделие и хобби
+              </option>
+              <option value="Организация мероприятий">
+                Организация мероприятий
+              </option>
+              <option value="Артисты">Артисты</option>
+              <option value="Охрана">Охрана</option>
+              <option value="Услуги для животных">Услуги для животных</option>
+              <option value="Разное">Разное</option>
             </select>
+          </div>
+
+          <div v-if="filters.length > 0" class="mt-4">
+            <h4 class="text-left mb-2">Выберите фильтры:</h4>
+            <div class="flex flex-wrap justify-center">
+              <div v-for="filter in filters" :key="filter" class="mr-4">
+                <input
+                  type="checkbox"
+                  :id="`filter-${filter}`"
+                  :value="filter"
+                  v-model="selectedFilters"
+                />
+                <label :for="`filter-${filter}`">{{ filter }}</label>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -185,6 +217,15 @@ export default {
 </script>
 
 <!-- <script>
+import Comments from './components/Comments.vue';
+
+export default {
+  components: {
+    Comments,
+  },
+};
+</script> -->
+<!-- <script>
 export default {
   name: "name",
 };
@@ -210,3 +251,34 @@ export default {
 @tailwind components;
 @tailwind utilities;
 </style>
+
+<script>
+import axios from "axios";
+
+export default {
+  data() {
+    return {
+      isBlockVisible: true,
+      selectedCategory: "",
+      filters: [],
+      selectedFilters: [],
+    };
+  },
+  methods: {
+    async fetchFilters() {
+      if (this.selectedCategory) {
+        try {
+          const response = await axios.get("/api/filters", {
+            params: { category: this.selectedCategory },
+          });
+          this.filters = response.data;
+        } catch (error) {
+          console.error(error);
+        }
+      } else {
+        this.filters = [];
+      }
+    },
+  },
+};
+</script>

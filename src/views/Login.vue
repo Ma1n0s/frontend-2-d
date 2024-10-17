@@ -67,8 +67,9 @@ const login = async () => {
       email: data.email,
       password: data.password,
     });
-    localStorage.setItem("token", r.data.token); // Сохранение токена
-    router.push("/");
+    localStorage.setItem("token", r.data.token);
+    localStorage.setItem("email", data.email);
+    router.push("/AddComment");
   } catch (err) {
     console.log(err);
   }

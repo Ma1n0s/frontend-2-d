@@ -120,7 +120,7 @@ const RegisterComp = async () => {
       inn_comp: data.inn_comp,
     });
     localStorage.setItem("token", response.data.token);
-    // router.push("/login");
+    router.push("/MainForm");
   } catch (error) {
     errorMessage.value =
       error.response?.data?.message || "Произошла ошибка при регистрации.";

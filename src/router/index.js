@@ -1,3 +1,4 @@
+import AddComment from '@/views/AddComment.vue';
 import Contacts from '@/views/Contacts.vue';
 import Login from '@/views/Login.vue';
 import Logout from '@/views/Logout.vue';
@@ -67,6 +68,14 @@ const router = createRouter({
     {
       path: '/Policy',
       component: Policy
+    },
+    {
+      path: '/AddComment',
+      component: AddComment
+    },
+    {
+      path: '/Comment',
+      component: Comment
     },
   ]
 })

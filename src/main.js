@@ -22,7 +22,7 @@ import axios, { Axios } from 'axios'
 // axios.defaults.baseURL = 'http://http://localhost:5173/login';
 
 const url = import.meta.env.VITE_BACKEND_URL
-axios.get(`${url}/sanctum/csrf-cookie`);
+axios.get(`http://localhost:80/sanctum/csrf-cookie`);
 
 
 const app = createApp(App)

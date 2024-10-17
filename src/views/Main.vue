@@ -65,6 +65,7 @@
     />
     <div class="text md-10 sm:text-lg md:text-xl">
       <div class="text-center font-semibold text-white mb-8">
+        <span>Email: {{ userEmail }}</span>
         <span>ИНН 6623131933</span><br />
         <span>ОГРН 1196658058717</span>
       </div>
@@ -373,3 +374,20 @@ import vk from "@/assets/vk.svg";
 import other from "@/assets/other.svg";
 import yoodle from "@/assets/yoodle.svg";
 </script>
+
+<!-- <script setup>
+import { ref, onMounted } from 'vue';
+
+const userEmail = ref('');
+
+const loadEmail = () => {
+  const email = localStorage.getItem('email');
+  if (email) {
+    userEmail.value = email;
+};
+
+
+onMounted(() => {
+  loadEmail();
+});
+</script> -->
