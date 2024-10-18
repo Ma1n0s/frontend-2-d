@@ -45,7 +45,7 @@ export default {
         this.newComment = "";
         this.fetchComments();
       } catch (error) {
-        console.error.message;
+        console.error(error);
       }
     },
   },

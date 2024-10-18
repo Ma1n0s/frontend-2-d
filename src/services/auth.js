@@ -6,6 +6,12 @@ export const AuthService = {
     login(credentials) {
         return axios.post(`http://localhost:80/api/login`, credentials, {withCredentials:true});
     },
+    fetchComments(postId) {
+        return axios.get(`http://127.0.0.1:80/posts/${postId}/comments`, { withCredentials: true });
+    },
+    submitComment(commentData) {
+        return axios.post(`http://127.0.0.1:80/comments`, commentData, { withCredentials: true });
+    },
     register(userData) {
         return axios.post(`http://127.0.0.1:80/api/register`, userData); 
     },

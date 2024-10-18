@@ -18,11 +18,28 @@
           >
         </ul>
         <!-- Бургер-меню -->
-        <div class="sm:hidden flex items-center">
-          <button id="burgerButton" class="focus:outline-none">
-            <menu3 alt="Menu" class="w-8 h-8" />
-            <img src="" alt="Menu" class="w-8 h-8" />
-          </button>
+        <div id="app">
+          <nav class="relative">
+            <menu3 class="w-10 h-10 cursor-pointer" @click="toggleMenu"></menu3>
+            <transition name="fade" mode="out-in">
+              <ul
+                v-if="show"
+                key="menu"
+                class="absolute right-0 mt-2 w-48 bg-white border border-gray-300 shadow-lg rounded-md md:hidden"
+              >
+                <li class="hover:bg-gray-100">
+                  <RouterLink to="/login" class="block px-4 py-2"
+                    >Вход</RouterLink
+                  >
+                </li>
+                <li class="hover:bg-gray-100">
+                  <RouterLink to="/register" class="block px-4 py-2"
+                    >Регистрация</RouterLink
+                  >
+                </li>
+              </ul>
+            </transition>
+          </nav>
         </div>
       </nav>
     </header>
@@ -64,7 +81,7 @@
         </div>
 
         <div v-if="isBlockVisible" class="mt-4 p-4 bg-gray-200">
-          <h3 class="text-left mb-2">Фильтрации по тегам</h3>
+          <h3 class="text-left mb-2">Фильтрация по тегам</h3>
           <div class="flex justify-center">
             <select
               name="categories"
@@ -74,35 +91,13 @@
               @change="fetchFilters"
             >
               <option value="">Выберите категорию</option>
-              <option value="Ремонт и строительство">
-                Ремонт и строительство
+              <option
+                v-for="category in categories"
+                :key="category.id"
+                :value="category.id"
+              >
+                {{ category.name }}
               </option>
-              <option value="Ремонт и установка техники">
-                Ремонт и установка техники
-              </option>
-              <option value="Ремонт авто">Ремонт авто</option>
-              <option value="Репетиторы и обучение">
-                Репетиторы и обучение
-              </option>
-              <option value="Красота">Красота</option>
-              <option value="Перевозки и курьеры">Перевозки и курьеры</option>
-              <option value="Хозяйство и уборка">Хозяйство и уборка</option>
-              <option value="Компьютеры и IT">Компьютеры и IT</option>
-              <option value="Дизайнеры">Дизайнеры</option>
-              <option value="Аренда">Аренда</option>
-              <option value="Юристы">Юристы</option>
-              <option value="Тренеры">Тренеры</option>
-              <option value="Фото, видео, аудио">Фото, видео, аудио</option>
-              <option value="Творчество, рукоделие и хобби">
-                Творчество, рукоделие и хобби
-              </option>
-              <option value="Организация мероприятий">
-                Организация мероприятий
-              </option>
-              <option value="Артисты">Артисты</option>
-              <option value="Охрана">Охрана</option>
-              <option value="Услуги для животных">Услуги для животных</option>
-              <option value="Разное">Разное</option>
             </select>
           </div>
 
@@ -198,19 +193,57 @@
 
 <script setup>
 import yoodle from "@/assets/yoodle.svg";
+import menu3 from "@/assets/menu3.svg";
 import { RouterLink } from "vue-router";
 </script>
 
 <script>
+import axios from "axios";
+
 export default {
   data() {
     return {
-      isBlockVisible: false,
+      isBlockVisible: true,
+      selectedCategory: "",
+      categories: [],
+      filters: [],
+      selectedFilters: [],
+      show: false,
     };
   },
+  mounted() {
+    this.fetchCategories();
+  },
   methods: {
-    toggleBlock() {
-      this.isBlockVisible = !this.isBlockVisible;
+    async fetchCategories() {
+      try {
+        const response = await axios.get(
+          "http://localhost:5174/api/categories"
+        );
+        this.categories = response.data;
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    },
+    async fetchFilters() {
+      if (this.selectedCategory) {
+        try {
+          const response = await axios.get(
+            "http://localhost:5174/api/services",
+            {
+              params: { category: this.selectedCategory },
+            }
+          );
+          this.filters = response.data;
+        } catch (error) {
+          console.error("Error fetching services:", error);
+        }
+      } else {
+        this.filters = [];
+      }
+    },
+    toggleMenu() {
+      this.show = !this.show;
     },
   },
 };
@@ -252,7 +285,18 @@ export default {
 @tailwind utilities;
 </style>
 
-<script>
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>
+
+<!-- <script>
 import axios from "axios";
 
 export default {
@@ -268,9 +312,12 @@ export default {
     async fetchFilters() {
       if (this.selectedCategory) {
         try {
-          const response = await axios.get("/api/filters", {
-            params: { category: this.selectedCategory },
-          });
+          const response = await axios.get(
+            "http://localhost:5174/api/filters",
+            {
+              params: { category: this.selectedCategory },
+            }
+          );
           this.filters = response.data;
         } catch (error) {
           console.error(error);
@@ -281,4 +328,4 @@ export default {
     },
   },
 };
-</script>
+</script> -->
