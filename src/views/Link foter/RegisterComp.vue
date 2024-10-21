@@ -13,13 +13,13 @@
               </div>
               <div class="card-body p-4">
                 <div class="mb-4">
-                  <label for="username" class="block mb-2 text-sm"
+                  <label for="name" class="block mb-2 text-sm"
                     >Фамилия Имя(Отчество при наличии)</label
                   >
                   <input
-                    v-model="data.username"
+                    v-model="data.name"
                     type="text"
-                    id="username"
+                    id="name"
                     placeholder="Логин..."
                     required
                     class="w-full p-2 pl-10 text-sm text-gray-700"
@@ -93,38 +93,62 @@
         </div>
       </div>
     </form>
+
+    <div>
+      <h1>Подтвержденные компании</h1>
+      <ul>
+        <li v-for="company in companies" :key="company.id">
+          {{ company.name }}
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { reactive, ref } from "vue";
+import { reactive, ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import { AuthService } from "../services/auth";
+import { AuthService } from "../../services/auth";
 
 const data = reactive({
-  username: "",
+  name: "",
   email: "",
   name_comp: "",
   inn_comp: "",
+  is_confirmed: false,
 });
 
 const errorMessage = ref("");
+const companies = ref([]);
 const router = useRouter();
 
 const RegisterComp = async () => {
   try {
     const response = await AuthService.RegisterComp({
-      username: data.username,
+      name: data.name,
       email: data.email,
       name_comp: data.name_comp,
       inn_comp: data.inn_comp,
+      is_confirmed: data.is_confirmed,
     });
     localStorage.setItem("token", response.data.token);
-    router.push("/MainForm");
+    router.push("/");
   } catch (error) {
     errorMessage.value =
       error.response?.data?.message || "Произошла ошибка при регистрации.";
     console.error(error);
   }
 };
+const fetchCompanies = async () => {
+  try {
+    const response = await fetch("http://127.0.0.1:80/api/companies");
+    companies.value = await response.json();
+  } catch (error) {
+    console.error("Ошибка при получении компаний:", error);
+  }
+};
+
+onMounted(() => {
+  fetchCompanies();
+});
 </script>

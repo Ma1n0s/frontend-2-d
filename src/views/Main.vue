@@ -374,20 +374,3 @@ import vk from "@/assets/vk.svg";
 import other from "@/assets/other.svg";
 import yoodle from "@/assets/yoodle.svg";
 </script>
-
-<!-- <script setup>
-import { ref, onMounted } from 'vue';
-
-const userEmail = ref('');
-
-const loadEmail = () => {
-  const email = localStorage.getItem('email');
-  if (email) {
-    userEmail.value = email;
-};
-
-
-onMounted(() => {
-  loadEmail();
-});
-</script> -->

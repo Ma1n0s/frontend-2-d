@@ -137,25 +137,17 @@
           class="bg-gray-300 p-6 w-full h-96 mx-auto rounded shadow-md flex items-center justify-center"
         >
           <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            <div
-              class="bg-gray-200 p-6 h-48 rounded shadow-md flex items-center justify-center"
-            >
-              <a
-                href="http://127.0.0.1:5174/"
-                class="text-blue-500 hover:underline"
-              >
-                Перейти на сайт
-              </a>
-            </div>
-            <div
-              class="bg-gray-200 p-6 h-48 rounded shadow-md flex items-center justify-center"
-            >
-              Контент 2
-            </div>
-            <div
-              class="bg-gray-200 p-6 h-48 rounded shadow-md flex items-center justify-center"
-            >
-              Контент 3
+            <div>
+              <comp @companyConfirmed="addCompany" :companies="companies" />
+              <ul>
+                <li
+                  v-for="company in companies"
+                  :key="company.id"
+                  @click="goToCompany(company.id)"
+                >
+                  {{ company.name }}
+                </li>
+              </ul>
             </div>
           </div>
         </div>
@@ -198,86 +190,36 @@ import { RouterLink } from "vue-router";
 </script>
 
 <script>
-import axios from "axios";
+import Comp from "./Comp.vue";
 
 export default {
+  components: {
+    Comp,
+  },
   data() {
     return {
-      isBlockVisible: true,
-      selectedCategory: "",
-      categories: [],
-      filters: [],
-      selectedFilters: [],
+      companies: [],
       show: false,
     };
   },
   mounted() {
-    this.fetchCategories();
+    this.fetchCompanies();
   },
   methods: {
-    async fetchCategories() {
+    async fetchCompanies() {
       try {
-        const response = await axios.get(
-          "http://localhost:5174/api/categories"
-        );
-        this.categories = response.data;
+        const response = await fetch("http://localhost:5174/api/companies");
+        this.companies = await response.json();
       } catch (error) {
-        console.error("Error fetching categories:", error);
+        console.error("Ошибка при получении компаний:", error);
       }
     },
-    async fetchFilters() {
-      if (this.selectedCategory) {
-        try {
-          const response = await axios.get(
-            "http://localhost:5174/api/services",
-            {
-              params: { category: this.selectedCategory },
-            }
-          );
-          this.filters = response.data;
-        } catch (error) {
-          console.error("Error fetching services:", error);
-        }
-      } else {
-        this.filters = [];
-      }
-    },
-    toggleMenu() {
-      this.show = !this.show;
+    goToCompany(companyId) {
+      window.location.href = `/MainForm/organization/${companyId}`;
     },
   },
 };
 </script>
-
-<!-- <script>
-import Comments from './components/Comments.vue';
-
-export default {
-  components: {
-    Comments,
-  },
-};
-</script> -->
-<!-- <script>
-export default {
-  name: "name",
-};
-</script> -->
-
-<!-- <script>
-export default {
-  data() {
-    return {
-      isBlockVisible: false,
-    };
-  },
-  methods: {
-    toggleBlock() {
-      this.isBlockVisible = this.clear;
-    },
-  },
-};
-</script> -->
 
 <style>
 @tailwind base;
@@ -295,37 +237,3 @@ export default {
   opacity: 0;
 }
 </style>
-
-<!-- <script>
-import axios from "axios";
-
-export default {
-  data() {
-    return {
-      isBlockVisible: true,
-      selectedCategory: "",
-      filters: [],
-      selectedFilters: [],
-    };
-  },
-  methods: {
-    async fetchFilters() {
-      if (this.selectedCategory) {
-        try {
-          const response = await axios.get(
-            "http://localhost:5174/api/filters",
-            {
-              params: { category: this.selectedCategory },
-            }
-          );
-          this.filters = response.data;
-        } catch (error) {
-          console.error(error);
-        }
-      } else {
-        this.filters = [];
-      }
-    },
-  },
-};
-</script> -->

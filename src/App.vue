@@ -9,7 +9,9 @@ import vk from "@/assets/vk.svg";
 import other from "@/assets/other.svg";
 import yoodle from "@/assets/yoodle.svg";
 import menu3 from "@/assets/menu3.svg";
+import { RouterView } from "vue-router";
 </script>
+
 <script>
 export default {
   computed: {

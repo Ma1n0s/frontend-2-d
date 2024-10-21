@@ -69,7 +69,7 @@ const login = async () => {
     });
     localStorage.setItem("token", r.data.token);
     localStorage.setItem("email", data.email);
-    router.push("/AddComment");
+    router.push("/Comment");
   } catch (err) {
     console.log(err);
   }

@@ -1,14 +1,17 @@
 import AddComment from '@/views/AddComment.vue';
-import Contacts from '@/views/Contacts.vue';
+import Comment from '@/views/Comment.vue';
+import Comp from '@/views/Comp.vue';
+import Contacts from '@/views/Link foter/Contacts.vue';
 import Login from '@/views/Login.vue';
 import Logout from '@/views/Logout.vue';
 import Main from '@/views/Main.vue';
 import MainForm from '@/views/MainForm.vue';
-import Policy from '@/views/Policy.vue';
+import Organization from '@/views/Organization.vue';
+import Policy from '@/views/Link foter/Policy.vue';
 import Register from '@/views/Register.vue';
-import RegisterComp from '@/views/RegisterComp.vue';
-import RuleRev from '@/views/RuleRev.vue';
-import SiteRule from '@/views/SiteRule.vue';
+import RegisterComp from '@/views/Link foter/RegisterComp.vue';
+import RuleRev from '@/views/Link foter/RuleRev.vue';
+import SiteRule from '@/views/Link foter/SiteRule.vue';
 import { createRouter, createWebHistory } from 'vue-router'
 
 
@@ -17,22 +20,9 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
-      name: 'home',
+      path: '/MainForm',
       component: Main
     },
-    // {
-    //   path: '/about',
-    //   name: 'about',
-    //   // route level code-splitting
-    //   // this generates a separate chunk (About.[hash].js) for this route
-    //   // which is lazy-loaded when the route is visited.
-    //   component: () => import('../views/AboutView.vue')
-    // },
-    // {
-    //     path: '/menu',
-    //     name: 'menu',
-    // },
     {
       path: '/login',
       component: Login
@@ -46,8 +36,10 @@ const router = createRouter({
       component: Logout
     },
     {
-      path: '/MainForm',
-      component: MainForm
+      path: '/',
+      name: 'home',
+      component: MainForm,
+      
     },
     {
       path: '/RegisterComp',
@@ -55,7 +47,7 @@ const router = createRouter({
     },
     {
       path: '/SiteRule',
-      component: SiteRule
+      component: SiteRule 
     },
     {
       path: '/RuleRev',
@@ -76,6 +68,14 @@ const router = createRouter({
     {
       path: '/Comment',
       component: Comment
+    },
+    {
+      path: '/Comp',
+      component: Comp
+    },
+    {
+      path: '/MainForm/Organization/:id',
+      component: Organization
     },
   ]
 })
