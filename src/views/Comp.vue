@@ -1,13 +1,23 @@
 <template>
-  <div>
-    <h1>Подтвержденные компании</h1>
-    <ul>
-      <li v-for="company in confirmedCompanies" :key="company.id">
-        <router-link :to="`/MainForm/Organization/${company.id}`">
+  <div class="p-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div
+        v-for="company in confirmedCompanies"
+        :key="company.id"
+        class="bg-white p-6 rounded-lg shadow-md flex flex-col items-start border-2 border-gray-300"
+      >
+        <router-link
+          :to="`/Organization/${company.id}`"
+          class="font-bold text-xl md:text-2xl mb-2"
+        >
           {{ company.name_comp }}
         </router-link>
-      </li>
-    </ul>
+        <div class="text-sm text-gray-600">
+          Краснодар 350080, Краснодарский кр., г. Краснодар, ул. Уральская, д.
+          97
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 

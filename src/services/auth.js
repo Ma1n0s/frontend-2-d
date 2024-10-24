@@ -18,6 +18,9 @@ export const AuthService = {
     RegisterComp(userData) {
         return axios.post(`http://127.0.0.1:80/api/companies`, userData); 
     },
+    Profile(userData) {
+        return axios.post(`http://127.0.0.1:80/api/Profile`, userData); 
+    },
     logout() {
         return axios.post(`${API_URL}/logout`,{},{withCredentials:true} );
     },

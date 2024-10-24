@@ -1,129 +1,104 @@
 <template>
   <div class="min-h-screen flex flex-col">
-    <header class="py-1 flex bg-gray-300 top-0">
-      <nav class="flex flex-col sm:flex-row justify-between w-full">
-        <ul class="flex flex-col sm:flex-row">
-          <yoodle
-            class="object-cover w-20 h-20 sm:w-32 sm:h-32 md:w-40 md:h-40 mb-8 mx-auto sm:mx-0 md:float-right"
-          />
-        </ul>
-        <ul class="flex flex-col sm:flex-row">
-          <RouterLink to="/login" class="px-4 py-2 text-black hover:bg-gray-200"
-            >Войти</RouterLink
-          >
-          <RouterLink
-            to="/register"
-            class="px-4 py-2 text-black hover:bg-gray-200"
-            >Регистрация</RouterLink
-          >
-        </ul>
-        <!-- Бургер-меню -->
-        <div id="app">
-          <nav class="relative">
-            <menu3 class="w-10 h-10 cursor-pointer" @click="toggleMenu"></menu3>
-            <transition name="fade" mode="out-in">
-              <ul
-                v-if="show"
-                key="menu"
-                class="absolute right-0 mt-2 w-48 bg-white border border-gray-300 shadow-lg rounded-md md:hidden"
-              >
-                <li class="hover:bg-gray-100">
-                  <RouterLink to="/login" class="block px-4 py-2"
-                    >Вход</RouterLink
-                  >
-                </li>
-                <li class="hover:bg-gray-100">
-                  <RouterLink to="/register" class="block px-4 py-2"
-                    >Регистрация</RouterLink
-                  >
-                </li>
-              </ul>
-            </transition>
-          </nav>
-        </div>
-      </nav>
-    </header>
-
-    <main class="py-4 bg-white text-black flex-1">
+    <Header />
+    <main class="py-4 bg-white text-black flex-1 px-4 sm:px-24">
       <div>
-        <section class="py-2 text-center container element show">
+        <h3 class="text-center text-3xl mb-4">Список Организаций</h3>
+        <p class="text-center text-2xl mb-4">Фильтр организаций</p>
+
+        <section class="py-2 text-center">
           <div>
-            <h3 class="text-center text-3xl mb-4">Список Организаций</h3>
-            <p class="text-center text-2xl mb-4">Фильтр организаций</p>
             <div class="flex flex-col sm:flex-row justify-center mb-4">
               <input
-                class="relative bg-gray-200 w-full sm:w-1/3 h-10 p-4 border border-gray-400 mx-2"
+                v-model="searchQuery"
+                class="relative bg-slate-50 w-full sm:w-1/3 h-10 p-4 border mx-2 sm:mr-4 shadow-md rounded-lg"
                 type="text"
-                placeholder="Поиск по названию"
-              />
-              <input
-                class="relative bg-gray-200 w-full sm:w-1/3 h-10 p-4 border border-gray-400 mx-2"
-                type="text"
-                placeholder="Поиск по городу"
+                placeholder="Поиск по названию..."
+                @keyup.enter="searchCompanies"
               />
               <button
+                @click="searchCompanies"
+                class="flex items-center border-none bg-transparent cursor-pointer"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  class="mr-2"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M21 21l-4.35-4.35M16.5 10.5A6.5 6.5 0 109 16.5a6.5 6.5 0 007.5-6z"
+                  />
+                </svg>
+              </button>
+              <button
                 @click="toggleBlock"
-                class="bg-gray-100 text-gray-400 border-2 border-gray-400 font-bold py-2 sm:py-3 md:py-4 px-4 sm:px-6 md:px-8 rounded mx-2"
+                class="bg-gray-100 border-gray-300 text-gray-400 w-full sm:w-44 border-2 h-12 font-bold py-2 px-4 rounded mx-2 mb-2 sm:mb-0 transition duration-200 shadow-md"
               >
                 Выбрать теги
               </button>
+
               <button
-                class="bg-gray-100 text-gray-400 border-2 border-gray-400 font-bold py-2 sm:py-3 md:py-4 px-4 sm:px-6 md:px-8 rounded mx-2"
+                @click="resetFilters"
+                class="bg-gray-100 border-gray-300 text-gray-400 w-full sm:w-44 border-2 h-12 font-bold py-2 px-4 rounded mx-2 transition duration-200 shadow-md"
               >
                 Сбросить
               </button>
             </div>
           </div>
-        </section>
 
-        <div id="app">
-          <Comments />
-        </div>
-
-        <div v-if="isBlockVisible" class="mt-4 p-4 bg-gray-200">
-          <h3 class="text-left mb-2">Фильтрация по тегам</h3>
-          <div class="flex justify-center">
-            <select
-              name="categories"
-              id="cataloc"
-              class="bg-gray-200 border border-gray-400 p-2"
-              v-model="selectedCategory"
-              @change="fetchFilters"
+          <transition name="fade">
+            <div
+              v-if="isBlockOpen"
+              class="bg-slate-50 p-4 w-full rounded-lg shadow-md flex flex-col border-2 border-gray-300"
             >
-              <option value="">Выберите категорию</option>
-              <option
-                v-for="category in categories"
-                :key="category.id"
-                :value="category.id"
-              >
-                {{ category.name }}
-              </option>
-            </select>
-          </div>
-
-          <div v-if="filters.length > 0" class="mt-4">
-            <h4 class="text-left mb-2">Выберите фильтры:</h4>
-            <div class="flex flex-wrap justify-center">
-              <div v-for="filter in filters" :key="filter" class="mr-4">
-                <input
-                  type="checkbox"
-                  :id="`filter-${filter}`"
-                  :value="filter"
-                  v-model="selectedFilters"
-                />
-                <label :for="`filter-${filter}`">{{ filter }}</label>
+              <div class="text-left text-lg">Фильтрация по тегам</div>
+              <div class="text-right">
+                Категория:
+                <select
+                  v-model="selectedCategory"
+                  @change="fetchServices"
+                  class="bg-gray-200 border border-gray-400 p-2 w-full sm:w-52"
+                >
+                  <option
+                    v-for="category in categories"
+                    :key="category.id"
+                    :value="category.id"
+                  >
+                    {{ category.name }}
+                  </option>
+                </select>
+              </div>
+              <div v-if="services.length > 0">
+                <h3 class="text-lg font-semibold mb-4"></h3>
+                <div class="grid grid-cols-2 gap-1">
+                  <div
+                    v-for="service in services"
+                    :key="service.id"
+                    class="flex items-center"
+                  >
+                    <input type="checkbox" :id="service.id" class="mr-2" />
+                    <label :for="service.id">{{ service.name }}</label>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
+          </transition>
+        </section>
 
-        <div class="inline-grid text-left mt-4">
+        <div class="inline-grid text-left mt-4 mb-6">
           <h3 class="">Сортировка</h3>
           <div class="flex justify-center">
             <select
               name="sorts"
               id="sort"
-              class="bg-gray-200 border border-gray-400 p-2"
+              class="bg-gray-200 border border-gray-400 p-2 w-full sm:w-auto"
             >
               <option value="1">Рейтинг: Хороший</option>
               <option value="2">Рейтинг: Плохой</option>
@@ -133,53 +108,30 @@
             </select>
           </div>
         </div>
+
         <div
-          class="bg-gray-300 p-6 w-full h-96 mx-auto rounded shadow-md flex items-center justify-center"
+          class="bg-slate-50 p-6 w-full rounded-lg shadow-md flex flex-col border-2 border-gray-300"
         >
-          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            <div>
-              <comp @companyConfirmed="addCompany" :companies="companies" />
-              <ul>
-                <li
-                  v-for="company in companies"
-                  :key="company.id"
-                  @click="goToCompany(company.id)"
-                >
-                  {{ company.name }}
-                </li>
-              </ul>
-            </div>
+          <div class="flex-grow overflow-auto">
+            <Comp
+              @companyConfirmed="addCompany"
+              :companies="filteredCompanies"
+            />
           </div>
+          <ul class="mt-4">
+            <li
+              v-for="company in filteredCompanies"
+              :key="company.id"
+              @click="goToCompany(company.id)"
+              class="cursor-pointer hover:bg-gray-200 p-2 rounded"
+            >
+              {{ company.name }}
+            </li>
+          </ul>
         </div>
       </div>
     </main>
-
-    <footer class="py-4 bg-gray-800 text-white">
-      <div class="container mx-auto text-center">
-        <p class="text-sm">
-          &copy; Авторитетные отзывы от специалистов интернет-рынка.
-        </p>
-        <div
-          class="flex flex-col md:flex-row justify-center md:space-x-4 mt-2 space-y-2 md:space-y-0"
-        >
-          <RouterLink to="/Policy" class="hover:text-gray-400"
-            >Политика конфиденциальности</RouterLink
-          >
-          <RouterLink to="/RegisterComp" class="hover:text-gray-400"
-            >+ Добавить компанию</RouterLink
-          >
-          <RouterLink to="/SiteRule" class="hover:text-gray-400"
-            >Правила сайта</RouterLink
-          >
-          <RouterLink to="/RuleRev" class="hover:text-gray-400"
-            >Правила к написанию отзывов</RouterLink
-          >
-          <RouterLink to="/Contacts" class="hover:text-gray-400"
-            >Способы оплаты</RouterLink
-          >
-        </div>
-      </div>
-    </footer>
+    <Footer />
   </div>
 </template>
 
@@ -191,19 +143,45 @@ import { RouterLink } from "vue-router";
 
 <script>
 import Comp from "./Comp.vue";
+import Footer from "./MainForm/Footer.vue";
+import Header from "./MainForm/Header.vue";
 
 export default {
   components: {
     Comp,
+    Footer,
+    Header,
   },
   data() {
     return {
+      searchQuery: "",
       companies: [],
-      show: false,
+      searchName: "",
+      searchCity: "",
+      isBlockOpen: false,
+      selectedCategory: null,
+      filters: [],
+      selectedFilters: [],
+      categories: [],
+      services: [],
     };
   },
   mounted() {
     this.fetchCompanies();
+    this.fetchCategories();
+  },
+  computed: {
+    filteredCompanies() {
+      return this.companies.filter((company) => {
+        const nameMatch = company.name
+          .toLowerCase()
+          .includes(this.searchName.toLowerCase());
+        const cityMatch = company.city
+          .toLowerCase()
+          .includes(this.searchCity.toLowerCase());
+        return nameMatch && cityMatch;
+      });
+    },
   },
   methods: {
     async fetchCompanies() {
@@ -211,11 +189,55 @@ export default {
         const response = await fetch("http://localhost:5174/api/companies");
         this.companies = await response.json();
       } catch (error) {
-        console.error("Ошибка при получении компаний:", error);
+        // console.error("Ошибка при получении компаний:", error);
       }
     },
     goToCompany(companyId) {
-      window.location.href = `/MainForm/organization/${companyId}`;
+      window.location.href = `/organization/${companyId}`;
+    },
+    resetFilters() {
+      this.searchName = "";
+      this.searchCity = "";
+    },
+    toggleBlock() {
+      this.isBlockOpen = !this.isBlockOpen;
+    },
+    async fetchCategories() {
+      try {
+        const response = await fetch("http://127.0.0.1:80/api/categories");
+        this.categories = await response.json();
+      } catch (error) {
+        console.error("Ошибка при получении категорий:", error);
+      }
+    },
+    async fetchServices() {
+      if (this.selectedCategory) {
+        try {
+          const response = await fetch(
+            `http://127.0.0.1:80/api/services/category/${this.selectedCategory}`
+          );
+          this.services = await response.json();
+        } catch (error) {
+          console.error("Ошибка при получении услуг:", error);
+        }
+      } else {
+        this.services = [];
+      }
+    },
+    async searchCompanies() {
+      if (!this.searchQuery) return;
+
+      try {
+        const response = await axios.get(
+          "http://127.0.0.1:80/api/companies/search",
+          {
+            params: { query: this.searchQuery },
+          }
+        );
+        this.companies = response.data;
+      } catch (error) {
+        console.error("Ошибка при поиске компаний:", error);
+      }
     },
   },
 };
@@ -235,5 +257,15 @@ export default {
 .fade-enter,
 .fade-leave-to {
   opacity: 0;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s, max-height 0.5s ease-in-out;
+}
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+  max-height: 0;
 }
 </style>

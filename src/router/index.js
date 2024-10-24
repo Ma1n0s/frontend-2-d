@@ -1,17 +1,17 @@
-import AddComment from '@/views/AddComment.vue';
 import Comment from '@/views/Comment.vue';
 import Comp from '@/views/Comp.vue';
-import Contacts from '@/views/Link foter/Contacts.vue';
+import Contacts from '@/views/LinkFoter/Contacts.vue';
 import Login from '@/views/Login.vue';
 import Logout from '@/views/Logout.vue';
 import Main from '@/views/Main.vue';
 import MainForm from '@/views/MainForm.vue';
 import Organization from '@/views/Organization.vue';
-import Policy from '@/views/Link foter/Policy.vue';
+import Policy from '@/views/LinkFoter/Policy.vue';
 import Register from '@/views/Register.vue';
-import RegisterComp from '@/views/Link foter/RegisterComp.vue';
-import RuleRev from '@/views/Link foter/RuleRev.vue';
-import SiteRule from '@/views/Link foter/SiteRule.vue';
+import RegisterComp from '@/views/LinkFoter/RegisterComp.vue';
+import RuleRev from '@/views/LinkFoter/RuleRev.vue';
+import SiteRule from '@/views/LinkFoter/SiteRule.vue';
+import Profile from '@/views/Profile.vue';
 import { createRouter, createWebHistory } from 'vue-router'
 
 
@@ -62,10 +62,6 @@ const router = createRouter({
       component: Policy
     },
     {
-      path: '/AddComment',
-      component: AddComment
-    },
-    {
       path: '/Comment',
       component: Comment
     },
@@ -74,8 +70,12 @@ const router = createRouter({
       component: Comp
     },
     {
-      path: '/MainForm/Organization/:id',
+      path: '/Organization/:id',
       component: Organization
+    },
+    {
+      path: '/Profile',
+      component: Profile
     },
   ]
 })
