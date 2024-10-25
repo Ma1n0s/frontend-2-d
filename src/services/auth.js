@@ -18,14 +18,36 @@ export const AuthService = {
     RegisterComp(userData) {
         return axios.post(`http://127.0.0.1:80/api/companies`, userData); 
     },
-    Profile(userData) {
-        return axios.post(`http://127.0.0.1:80/api/Profile`, userData); 
-    },
+    // Profile(userData) {
+    //     return axios.post(`http://127.0.0.1:80/api/Profile`, userData); 
+    // },
     logout() {
         return axios.post(`${API_URL}/logout`,{},{withCredentials:true} );
     },
     getUser() {
         return axios.get(`${API_URL}/user`);
-    }
+    },
+    getProfile() {
+        return axios.get('http://127.0.0.1:80/api/Profile', {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+      },
+    updateProfile(profileData) {
+        return axios.put('http://127.0.0.1:80/api/Profile', profileData, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+      },
+    postProfile(profileData) {
+        return axios.post('http://127.0.0.1:80/api/Profile', profileData, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+      },
+
 };
 

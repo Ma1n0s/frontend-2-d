@@ -1,6 +1,5 @@
 <template>
-  <div id="app">
-    <router-view />
+  <div>
     <Header />
   </div>
   <div class="px-4 md:px-32 mt-6" v-if="company">
@@ -48,9 +47,17 @@
 
     <p class="text-sm md:text-base">
       <strong>Подтвержден:</strong> {{ company.is_confirmed ? "Да" : "Нет" }}
+      <div class="bg-slate-50 p-2 w-52 rounded-lg shadow-md flex flex-col border-2 border-gray-300 text-center" >
+        <button @click="confirmCompany"> Подвердить</button>
+      </div>
+      <div class="bg-slate-50 p-2 w-52 rounded-lg shadow-md flex flex-col border-2 border-gray-300">
+        <button @click="openModer">Это ваша компания?</button>
+         <Moder ref="moder" />
+      </div>
     </p>
+    
 
-    <div class="borger border-amber-100 bg-gray-50">
+    <div class="borger border-amber-100 ">
       <h1 class="text-2xl md:text-3xl mb-4">Отзывы</h1>
 
       <div class="mb-6">
@@ -62,7 +69,7 @@
             <label class="block text-gray-700">Ваше имя:</label>
             <input
               type="text"
-              v-model="name"
+              v-moder="name"
               placeholder="Введите имя"
               required
               class="mt-1 p-2 border border-gray-300 rounded-md w-1/1"
@@ -71,7 +78,7 @@
           <div>
             <label class="block text-gray-700">Комментарий:</label>
             <textarea
-              v-model="comment"
+              v-moder="comment"
               placeholder="Ваши впечатления об организации"
               required
               maxlength="500"
@@ -122,7 +129,7 @@
         <h3 class="">Сортировка</h3>
         <div class="flex justify-center">
           <select
-            v-model="sortOrder"
+            v-moder="sortOrder"
             @change="sortComments"
             class="bg-gray-200 border border-gray-400 p-2"
           >
@@ -169,7 +176,7 @@
   </div>
 
   <br />
-  <div id="app">
+  <div>
     <router-view />
     <Footer />
   </div>
@@ -179,6 +186,7 @@
 import axios from "axios";
 import Footer from "./MainForm/Footer.vue";
 import Header from "./MainForm/Header.vue";
+import Moder from './Moder.vue';
 
 export default {
   data() {
@@ -201,6 +209,7 @@ export default {
   components: {
     Footer,
     Header,
+    Moder,
   },
   computed: {
     sortedComments() {
@@ -222,10 +231,6 @@ export default {
   mounted() {
     this.fetchComments();
     this.fetchCompany();
-
-    // this.company_id = this.$route.params.company_id;
-    // this.fetchComments();
-    // this.incrementViews(); // количество просмотров фиксация
   },
   watch: {
     "$route.params.company_id": function (newCompanyId) {
@@ -281,6 +286,20 @@ export default {
         this.loading = false;
       }
     },
+    async confirmCompany() {
+    const companyId = this.company.id; // Получаем ID компании
+    try {
+        const response = await axios.put(`http://127.0.0.1:80/api/companies/${companyId}`, {
+            is_confirmed: 1
+        });
+        
+        this.company.is_confirmed = 1; 
+        alert(response.data.message); 
+    } catch (error) {
+        console.error("Ошибка при подтверждении компании:", error);
+        alert("Произошла ошибка при подтверждении компании. Пожалуйста, попробуйте еще раз."); 
+    }
+},
     setRating(n) {
       this.rating = n;
     },
@@ -299,6 +318,9 @@ export default {
       if (this.currentPage > 1) {
         this.currentPage--;
       }
+    },
+    openModer() {
+      this.$refs.moder.open();
     },
   },
 };

@@ -17,14 +17,22 @@
       <div class="flex flex-col sm:flex-row">
         <div class="hidden sm:flex">
           <RouterLink
+            v-if="!isAuthenticated"
             to="/login"
             class="font-serif px-4 py-6 text-black hover:bg-gray-200"
             >Войти</RouterLink
           >
           <RouterLink
+            v-if="!isAuthenticated"
             to="/register"
             class="font-serif px-4 py-6 text-black hover:bg-gray-200"
             >Регистрация</RouterLink
+          >
+          <RouterLink
+            v-if="isAuthenticated"
+            to="/profile"
+            class="font-serif px-4 py-6 text-black hover:bg-gray-200"
+            >Профиль</RouterLink
           >
         </div>
         <nav class="relative sm:hidden ml-auto">
@@ -36,13 +44,24 @@
               class="absolute right-0 mt-2 w-48 bg-white border border-gray-300 shadow-lg rounded-md transition-opacity duration-300 ease-in-out"
             >
               <li class="hover:bg-gray-100">
-                <RouterLink to="/login" class="block px-4 py-2"
+                <RouterLink
+                  v-if="!isAuthenticated"
+                  to="/login"
+                  class="block px-4 py-2"
                   >Вход</RouterLink
                 >
               </li>
               <li class="hover:bg-gray-100">
-                <RouterLink to="/register" class="block px-4 py-2"
+                <RouterLink
+                  v-if="!isAuthenticated"
+                  to="/register"
+                  class="block px-4 py-2"
                   >Регистрация</RouterLink
+                >
+              </li>
+              <li class="hover:bg-gray-100" v-if="isAuthenticated">
+                <RouterLink to="/profile" class="block px-4 py-2"
+                  >Профиль</RouterLink
                 >
               </li>
             </ul>
@@ -59,6 +78,12 @@ export default {
     return {
       show: false,
     };
+  },
+  computed: {
+    isAuthenticated() {
+      // Проверка, есть ли токен в localStorage
+      return !!localStorage.getItem("token");
+    },
   },
   methods: {
     toggleMenu() {

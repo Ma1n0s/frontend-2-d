@@ -113,10 +113,7 @@
           class="bg-slate-50 p-6 w-full rounded-lg shadow-md flex flex-col border-2 border-gray-300"
         >
           <div class="flex-grow overflow-auto">
-            <Comp
-              @companyConfirmed="addCompany"
-              :companies="filteredCompanies"
-            />
+            <Comp />
           </div>
           <ul class="mt-4">
             <li

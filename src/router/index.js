@@ -13,6 +13,7 @@ import RuleRev from '@/views/LinkFoter/RuleRev.vue';
 import SiteRule from '@/views/LinkFoter/SiteRule.vue';
 import Profile from '@/views/Profile.vue';
 import { createRouter, createWebHistory } from 'vue-router'
+import Moder from '@/views/Moder.vue';
 
 
 
@@ -76,6 +77,10 @@ const router = createRouter({
     {
       path: '/Profile',
       component: Profile
+    },
+    {
+      path: '/Moder',
+      component: Moder
     },
   ]
 })
